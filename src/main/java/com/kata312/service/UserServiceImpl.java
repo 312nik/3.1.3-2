@@ -68,9 +68,9 @@ public class UserServiceImpl  implements UserService {
     @Override
     public String getRolesToString(User user) {
         Set<Role> roles=user.getRoles();
-        String getRoles = null;
+        String getRoles=" ";
         for (Role role:roles) {
-            getRoles=(role.toString().substring(5)+" ");
+            getRoles= getRoles+(role.toString().substring(5)+" ");
         }
         assert getRoles != null;
         return  getRoles.trim();
