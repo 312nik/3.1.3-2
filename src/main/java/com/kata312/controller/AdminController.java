@@ -64,7 +64,7 @@ public class AdminController {
                              BindingResult bindingResult, Model model) {
 
         if ( userService.findUserByEmail(user.getEmail()) != null) {
-        model.addAttribute("emailError", "Пользователь с таким именем уже существует");
+        model.addAttribute("emailError", "Пользователь с таким email уже существует");
             List <Role> roles= roleService.getAllRole();
             model.addAttribute("roles",roles);
 
@@ -76,7 +76,7 @@ public class AdminController {
            roles.add(roleService.getRoleByName(role));
         }
         user.setRoles(roles);
-    userService.saveUser(user);
+    userService.save(user);
         return "redirect:/admin/users";
 
     }
@@ -100,14 +100,21 @@ public class AdminController {
     }
 
     @PostMapping("/admin/edit")
-    public String update(User user,@RequestParam(value = "selectRoles") String[] selectRole) {
+    public  String update( User user, @RequestParam(value = "selectRoles") String[] selectRole,
+                           BindingResult bindingResult, Model model) {
+
+
+
+
+
+
+
         Set <Role> roles =  new HashSet<>();
         for (String role: selectRole ) {
             roles.add(roleService.getRoleByName(role));
         }
         user.setRoles(roles);
-
-        userService.saveUser(user);
+        userService.save(user);
         return "redirect:/admin/users";
 
     }

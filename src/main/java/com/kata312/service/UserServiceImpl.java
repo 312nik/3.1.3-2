@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -39,20 +40,22 @@ public class UserServiceImpl  implements UserService {
 
     }
     @Transactional
-    public void saveUser(User user) {
+    public void save(User user) {
 
-        user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+        if(user.getId()!=null) {
+            User userBase = findById(user.getId());
+            if (!userBase.getPassword().equals(user.getPassword())) {
+                user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+            }
+        } else {
+
+        user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));}
         userRepository.save(user);
 
     }
 
 
-    @Transactional
-    public void update(Long id, User updateUser) {
 
-        updateUser.setId(id);
-        userRepository.save(updateUser);
-    }
     @Transactional
     public void deleteUser(User user) {
 

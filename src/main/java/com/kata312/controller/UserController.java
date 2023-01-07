@@ -19,16 +19,9 @@ public class UserController {
 
     @Autowired
     public UserController(UserServiceImpl userService) {
-
         this.userService = userService;
 
-
     }
-
-
-
-
-
 
     @GetMapping("/user/user")
     public String showPrincipal(Model model, Principal principal) {

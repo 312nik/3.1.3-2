@@ -5,7 +5,7 @@
     <title>Update</title>
 </head>
 <body>
-<form action="#"  th:action="@{/admin/edit}" th:object="${user}" th:method="post">
+<form action="#" th:action="@{/admin/edit}" th:method="post" th:object="${user}">
     <label for="id">ID</label>
     <input type="text" th:field="*{id}" id="id" placeholder="id" readonly >
     <br>
@@ -24,6 +24,7 @@
     <br>
     <label for="email">Email</label>
     <input type="text" th:field="*{email}" id="email" placeholder="Email">
+    <p th:text="${emailError}" style="color: darkred" ></p>
     <br>
     <br>
     <label for="password">Password</label>
