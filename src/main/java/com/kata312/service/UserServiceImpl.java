@@ -43,8 +43,8 @@ public class UserServiceImpl  implements UserService {
     public void save(User user) {
 
         if(user.getId()!=null) {
-            User userBase = findById(user.getId());
-            if (!userBase.getPassword().equals(user.getPassword())) {
+            User userFromBase = findById(user.getId());
+            if (!userFromBase.getPassword().equals(user.getPassword())) {
                 user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
             }
         } else {

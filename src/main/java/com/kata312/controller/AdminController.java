@@ -52,10 +52,8 @@ public class AdminController {
 
     @GetMapping("admin/new")
     public String createUserForm(User user,Model model) {
-        user = new User();
         List <Role> roles= roleService.getAllRole();
         model.addAttribute("roles",roles);
-        model.addAttribute("user",user);
         return "admin/new";
     }
 
@@ -102,13 +100,6 @@ public class AdminController {
     @PostMapping("/admin/edit")
     public  String update( User user, @RequestParam(value = "selectRoles") String[] selectRole,
                            BindingResult bindingResult, Model model) {
-
-
-
-
-
-
-
         Set <Role> roles =  new HashSet<>();
         for (String role: selectRole ) {
             roles.add(roleService.getRoleByName(role));
