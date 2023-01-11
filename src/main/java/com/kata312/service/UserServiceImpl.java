@@ -1,83 +1,86 @@
 package com.kata312.service;
 
+import com.kata312.DAO.UserDAO;
+
 import com.kata312.model.Role;
 import com.kata312.model.User;
-import com.kata312.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 
 public class UserServiceImpl  implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserDAO userDAO;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bcryptPasswordEncoder) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder bcryptPasswordEncoder) {
+        this.userDAO = userDAO;
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
 
-
-
-        
-    }
-
-    public User findById(Long id) {
-
-        return userRepository.findById(id).orElse(null);
-
-    }
-
-    public List<User> findAll() {
-
-        return userRepository.findAll();
-
-    }
-    @Transactional
-    public void save(User user) {
-
-        if(user.getId()!=null) {
-            User userFromBase = findById(user.getId());
-            if (!userFromBase.getPassword().equals(user.getPassword())) {
-                user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
-            }
-        } else {
-
-        user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));}
-        userRepository.save(user);
-
     }
 
 
 
-    @Transactional
-    public void deleteUser(User user) {
 
-        userRepository.delete(user);
+@Transactional
+    @Override
+    public void updateUser(User user) {
+        User userFromBase = userDAO.getUserById(user.getId());
+        if (!userFromBase.getPassword().equals(user.getPassword())) {
+            user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+        }
+
+
+
+        userDAO.updateUser(user);
+
+    }
+@Transactional
+    @Override
+    public void removeUserById(Long id) {
+        userDAO.removeUserById(id);
 
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public User getUserById(Long id) {
+        return userDAO.getUserById(id);
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userDAO.getAllUsers();
+    }
+@Transactional
+    @Override
+    public void addUser(User user) {
+
+
+
+        user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
+        userDAO.addUser(user);
+
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userDAO.getUserByEmail(email);
+    }
+
     public String getRolesToString(User user) {
-        Set<Role> roles=user.getRoles();
-        String getRoles=" ";
+        List <Role> roles = user.getRoles();
+        StringBuilder getRoles= new StringBuilder(" ");
         for (Role role:roles) {
-            getRoles= getRoles+(role.toString().substring(5)+" ");
+            getRoles.append(role.toString().substring(5)).append(" ");
         }
         assert getRoles != null;
-        return  getRoles.trim();
+        return  getRoles.toString().trim();
     }
-
-
 }

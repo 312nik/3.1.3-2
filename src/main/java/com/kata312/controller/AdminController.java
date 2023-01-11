@@ -2,49 +2,42 @@ package com.kata312.controller;
 
 import com.kata312.model.Role;
 import com.kata312.model.User;
-import com.kata312.service.RoleServiceImpl;
-import com.kata312.service.UserServiceImpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kata312.service.RoleService;
+import com.kata312.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 
 public class AdminController {
 
-    private final UserServiceImpl userService;
-    private final RoleServiceImpl roleService;
+    private final UserService userService;
+    private final RoleService roleService;
 
-    @Autowired
-    public AdminController(UserServiceImpl userService, RoleServiceImpl roleService) {
-
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-
     }
-
 
 
     @GetMapping("/admin/users")
     public String showAllUsers(Model model, Principal principal) {
         String userMail = principal.getName();
-        User user= userService.findUserByEmail(userMail);
+        User user= userService.getUserByEmail(userMail);
         String rolesString= userService.getRolesToString(user);
         model.addAttribute("rolesString", rolesString);
         model.addAttribute("userPrincipal",user);
 
-        List<User> users = userService.findAll();
+        List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "/admin/users";
     }
@@ -61,28 +54,37 @@ public class AdminController {
     public String createUser(@ModelAttribute("user") @Valid User user, @RequestParam(value = "selectRoles") String[] selectRole,
                              BindingResult bindingResult, Model model) {
 
-        if ( userService.findUserByEmail(user.getEmail()) != null) {
+      try {
+       if ( userService.getUserByEmail(user.getEmail()) != null) {
         model.addAttribute("emailError", "Пользователь с таким email уже существует");
             List <Role> roles= roleService.getAllRole();
             model.addAttribute("roles",roles);
 
 
         return "/admin/new";
-    }
-        Set <Role> roles =  new HashSet<>();
+       }
+      }catch (Exception ignore) {}
+
+
+
+
+        List <Role> userRole =  new ArrayList<>();
         for (String role: selectRole ) {
-           roles.add(roleService.getRoleByName(role));
+            userRole.add(roleService.getRoleByName(role));
         }
-        user.setRoles(roles);
-    userService.save(user);
+        user.setRoles(userRole);
+
+
+
+    userService.addUser(user);
         return "redirect:/admin/users";
 
     }
 
     @PostMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.findById(id);
-        userService.deleteUser(user);
+
+        userService.removeUserById(id);
         return "redirect:/admin/users";
 
     }
@@ -91,7 +93,7 @@ public class AdminController {
     public String edit(@PathVariable("id") Long id, Model model) {
         List<Role> roles=  roleService.getAllRole();
         model.addAttribute("roles",roles);
-        User user = userService.findById(id);
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "/admin/edit";
 
@@ -100,12 +102,12 @@ public class AdminController {
     @PostMapping("/admin/edit")
     public  String update( User user, @RequestParam(value = "selectRoles") String[] selectRole,
                            BindingResult bindingResult, Model model) {
-        Set <Role> roles =  new HashSet<>();
+        List <Role> roles =  new ArrayList<>();
         for (String role: selectRole ) {
             roles.add(roleService.getRoleByName(role));
         }
         user.setRoles(roles);
-        userService.save(user);
+        userService.updateUser(user);
         return "redirect:/admin/users";
 
     }

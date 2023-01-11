@@ -5,6 +5,8 @@ import com.kata312.model.Role;
 import java.util.List;
 
 public interface RoleService {
+    void save (Role role);
     List<Role> getAllRole();
-    Role getRoleByName(String roleName);
+
+    Role getRoleByName(String role);
 }

@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping("/user/user")
     public String showPrincipal(Model model, Principal principal) {
        String userMail = principal.getName();
-       User user= userService.findUserByEmail(userMail);
+       User user= userService.getUserByEmail(userMail);
        String rolesString= userService.getRolesToString(user);
        model.addAttribute("rolesString", rolesString);
        model.addAttribute("userPrincipal",user);
