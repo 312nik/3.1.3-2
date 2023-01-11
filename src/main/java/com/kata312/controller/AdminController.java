@@ -104,7 +104,8 @@ public class AdminController {
                            BindingResult bindingResult, Model model) {
 
         try {
-            if ( userService.getUserByEmail(user.getEmail()) != null) {
+            if ( userService.getUserByEmail(user.getEmail()) != null &
+                    !userService.getUserByEmail(user.getUsername()).getId().equals(user.getId())) {
                 model.addAttribute("emailError", "Пользователь с таким email уже существует");
                 List <Role> roles= roleService.getAllRole();
                 model.addAttribute("roles",roles);
