@@ -32,6 +32,8 @@ public class UserServiceImpl  implements UserService {
 @Transactional
     @Override
     public void updateUser(User user) {
+
+
         User userFromBase = userDAO.getUserById(user.getId());
         if (!userFromBase.getPassword().equals(user.getPassword())) {
             user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
@@ -62,12 +64,8 @@ public class UserServiceImpl  implements UserService {
     @Override
     public void addUser(User user) {
 
-    User userFromBase = userDAO.getUserById(user.getId());
-    if (!userFromBase.getPassword().equals(user.getPassword())) {
         user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
-    } else {
-        user.setPassword(bcryptPasswordEncoder.encode(user.getPassword()));
-    }
+
 
         userDAO.addUser(user);
 
