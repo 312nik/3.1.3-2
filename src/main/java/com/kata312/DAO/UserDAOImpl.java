@@ -2,6 +2,8 @@ package com.kata312.DAO;
 
 
 import com.kata312.model.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,8 +57,9 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        TypedQuery<User> query = entityManager.createQuery("select u from User u where u.email=:email",
+
+    public User getUserByEmail(@Param("email")String email) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT p FROM User p LEFT JOIN FETCH p.roles WHERE p.email = (:email)",
                 User.class).setParameter("email", email);
         return query.getSingleResult();
     }

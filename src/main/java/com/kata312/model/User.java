@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+
+
 @Entity
 @Table (name="users")
 public class User  implements UserDetails {
@@ -25,7 +27,7 @@ public class User  implements UserDetails {
     private String email;
     @Column(name = "password")
     private String password;
-    @ManyToMany (fetch = FetchType.EAGER)
+    @ManyToMany (fetch = FetchType.LAZY)
     private List<Role> roles;
 
     public User() {
