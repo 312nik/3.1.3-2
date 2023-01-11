@@ -81,7 +81,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("/admin/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id, Model model) {
 
         userService.removeUserById(id);
@@ -99,7 +99,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("/admin/edit")
+    @PatchMapping("/admin/edit")
     public  String update( User user, @RequestParam(value = "selectRoles") String[] selectRole,
                            BindingResult bindingResult, Model model) {
         List <Role> roles =  new ArrayList<>();

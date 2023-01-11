@@ -5,7 +5,7 @@
     <title>Update</title>
 </head>
 <body>
-<form action="#" th:action="@{/admin/edit}" th:method="post" th:object="${user}">
+<form action="#" th:action="@{/admin/edit}" th:method="PATCH" th:object="${user}">
     <label for="id">ID</label>
     <input type="text" th:field="*{id}" id="id" placeholder="id" readonly >
     <br>
