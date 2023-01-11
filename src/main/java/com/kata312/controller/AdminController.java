@@ -102,6 +102,18 @@ public class AdminController {
     @PatchMapping("/admin/edit")
     public  String update( User user, @RequestParam(value = "selectRoles") String[] selectRole,
                            BindingResult bindingResult, Model model) {
+
+        try {
+            if ( userService.getUserByEmail(user.getEmail()) != null) {
+                model.addAttribute("emailError", "Пользователь с таким email уже существует");
+                List <Role> roles= roleService.getAllRole();
+                model.addAttribute("roles",roles);
+
+
+                return "/admin/edit";
+            }
+        }catch (Exception ignore) {}
+
         List <Role> roles =  new ArrayList<>();
         for (String role: selectRole ) {
             roles.add(roleService.getRoleByName(role));
